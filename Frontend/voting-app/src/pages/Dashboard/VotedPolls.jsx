@@ -31,7 +31,7 @@ export const VotedPolls = () => {
       {/* Content Area */}
       <div className="flex-1 ml-64 relative flex flex-col p-8 overflow-y-auto">
         <h2 className="text-3xl font-bold text-yellow-50 mb-7">
-          Sondages terminés / Notifications
+          Notifications
         </h2>
 
         {loading ? (
