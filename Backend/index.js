@@ -1,19 +1,38 @@
-// index.js (Backend)
+// index.js (Backend) - VERSION SIMPLIFIÉE
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
+const http = require('http');
+const socketIo = require('socket.io');
+const setupSocketHandlers = require('./socketHandler'); // NOUVEAU
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const pollsRoutes = require('./routes/polls');
+const roomsRoutes = require('./routes/rooms');
+const roomMembersRoutes = require('./routes/roomMembers');
+const roomPollsRoutes = require('./routes/roomPolls');
 
 const app = express();
+const server = http.createServer(app);
+
+// ============ SOCKET.IO Configuration ============
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST']
+  }
+});
+
+// ============ SETUP SOCKET HANDLERS ============
+setupSocketHandlers(io); // NOUVEAU - Remplace tout le code Socket.IO
 
 // ============ CORS Configuration ============
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:',
-  credentials: true, // TRÈS IMPORTANT pour les cookies/sessions
+  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -26,29 +45,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'nadaikramjwtsecretkey',
   resave: false,
-  saveUninitialized: false, // IMPORTANT: false pour ne pas créer de session vide
+  saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true en production avec HTTPS
-    httpOnly: true, // Protection XSS
-    maxAge: 24 * 60 * 60 * 1000, // 24 heures
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
   },
-  name: 'session_id' // Nom du cookie
+  name: 'session_id'
 }));
-
-// ============ Debug Middleware (à retirer en production) ============
-app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session User:', req.session?.user);
-  next();
-});
 
 // ============ Routes ============
 app.use('/api/auth', authRoutes);
-// Mount user routes (profile updates, etc.)
 app.use('/api/user', userRoutes);
-// Mount polls routes
 app.use('/api/polls', pollsRoutes);
+app.use('/api/rooms', roomsRoutes);
+app.use('/api/rooms', roomMembersRoutes);
+app.use('/api/rooms', roomPollsRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
@@ -74,8 +87,9 @@ app.use((req, res) => {
 
 // ============ Start Server ============
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`CORS enabled for: ${process.env.CLIENT_ORIGIN || 'http://localhost:5173'}`);
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📡 Socket.IO is active`);
+  console.log(`🌍 CORS enabled for: ${process.env.CLIENT_ORIGIN || 'http://localhost:5173'}`);
 });

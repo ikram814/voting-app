@@ -8,9 +8,16 @@ import { PollList } from './pages/Dashboard/MyPolls.jsx';
 import { VotedPolls } from './pages/Dashboard/VotedPolls';
 import { PollStats } from './pages/Dashboard/PollStats';
 import { AuthProvider, AuthContext } from './context/AuthContext.jsx';
+import { SocketProvider } from './context/SocketContext.jsx';
 import ProfilePage from './pages/Dashboard/Profile.jsx';
 import Profile from './pages/Dashboard/Profile.jsx';
 import ViewPolls from './pages/Dashboard/ViewPolls.jsx';
+import { Rooms } from './pages/Dashboard/Rooms.jsx';
+import { RoomDetail } from './pages/Dashboard/RoomDetail.jsx';
+import { RoomVoting } from './pages/Dashboard/RoomVoting.jsx';
+import { RoomPollResults } from './pages/Dashboard/RoomPollResults.jsx';
+import { JoinRoom } from './pages/Dashboard/JoinRoom.jsx';
+import NotificationCenter from './components/NotificationCenter.jsx';
 
 // Composant pour protéger les routes qui nécessitent une authentification
 const ProtectedRoute = ({ children }) => {
@@ -53,7 +60,9 @@ const PublicRoute = ({ children }) => {
 // Composant principal avec les routes
 const AppRoutes = () => {
   return (
-    <Routes>
+    <>
+      <NotificationCenter />
+      <Routes>
       {/* Routes publiques - redirigent vers /Home si déjà connecté */}
       <Route 
         path="/login" 
@@ -122,6 +131,42 @@ const AppRoutes = () => {
       } />
 
       <Route 
+        path="/rooms" 
+        element={
+          <ProtectedRoute>
+            <Rooms />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route 
+        path="/rooms/:roomId" 
+        element={
+          <ProtectedRoute>
+            <RoomDetail />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route 
+        path="/rooms/:roomId/poll/:pollId" 
+        element={
+          <ProtectedRoute>
+            <RoomVoting />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route 
+        path="/rooms/:roomId/poll/:pollId/results" 
+        element={
+          <ProtectedRoute>
+            <RoomPollResults />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route 
         path="/poll-stats/:pollId" 
         element={
           <ProtectedRoute>
@@ -136,6 +181,7 @@ const AppRoutes = () => {
       {/* Route 404 - page non trouvée */}
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   );
 };
 
@@ -184,9 +230,11 @@ const NotFound = () => {
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <SocketProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </SocketProvider>
     </AuthProvider>
   );
 };

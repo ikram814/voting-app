@@ -8,3 +8,4 @@ ADD COLUMN `image` LONGTEXT DEFAULT NULL AFTER `question`;
 
 
 
+

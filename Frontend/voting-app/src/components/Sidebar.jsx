@@ -6,7 +6,8 @@ import {
   CheckCircle, 
   Settings,
   LogOut,
-  User
+  User,
+  Users
 } from "lucide-react";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -97,6 +98,22 @@ export default function Sidebar() {
           onClick={() => navigate("/CreatePoll")} 
           isActive={location.pathname === "/CreatePoll"} 
         />
+        {user?.isAdmin && (
+          <SidebarItem 
+            icon={<Users size={22} />} 
+            text="Rooms" 
+            onClick={() => navigate("/rooms")} 
+            isActive={location.pathname === "/rooms" || location.pathname.startsWith("/rooms/")} 
+          />
+        )}
+        {!user?.isAdmin && (
+          <SidebarItem 
+            icon={<Users size={22} />} 
+            text="My Rooms" 
+            onClick={() => navigate("/rooms")} 
+            isActive={location.pathname === "/rooms" || location.pathname.startsWith("/rooms/")} 
+          />
+        )}
         <SidebarItem 
           icon={<CheckCircle size={22} />} 
           text="Notifications" 
