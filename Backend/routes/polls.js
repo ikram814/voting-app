@@ -55,6 +55,11 @@ router.post('/:pollId/vote', authMiddleware, async (req, res) => {
 
     const poll = polls[0];
 
+    // Check if user is the creator of this poll
+    if (poll.created_by === user.id) {
+      return res.status(403).json({ message: 'You cannot vote on your own poll' });
+    }
+
     // Check poll still open
     const now = new Date();
     if (now > new Date(poll.end_time))
@@ -214,6 +219,38 @@ router.get('/finished', authMiddleware, async (req, res) => {
     res.json(pollsWithVotes);
   } catch (err) {
     console.error('Erreur /finished:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get user statistics (polls created and polls voted count)
+// IMPORTANT: This route must be BEFORE /:pollId to avoid routing conflicts
+router.get('/user/stats', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.session.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    
+    // Count polls created by user
+    const [pollsCreated] = await pool.query(
+      'SELECT COUNT(*) as count FROM polls WHERE created_by = ?',
+      [userId]
+    );
+    
+    // Count distinct polls voted by user
+    const [pollsVoted] = await pool.query(
+      'SELECT COUNT(DISTINCT poll_id) as count FROM votes WHERE user_id = ?',
+      [userId]
+    );
+    
+    res.json({
+      pollsCreated: pollsCreated[0].count || 0,
+      pollsVoted: pollsVoted[0].count || 0
+    });
+  } catch (err) {
+    console.error('Erreur /user/stats:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

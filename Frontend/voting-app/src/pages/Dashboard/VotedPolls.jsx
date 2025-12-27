@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, BarChart3 } from "lucide-react";
 import api from "../../api";
 
 export const VotedPolls = () => {
@@ -44,61 +44,76 @@ export const VotedPolls = () => {
           <div className="text-red-400 text-lg py-10 text-center">{error}</div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="flex flex-col gap-8 w-full">
               {votedPolls.map((poll) => (
                 <div
                   key={poll.id}
                   onClick={() => navigate(`/poll-stats/${poll.id}`)}
-                  className="group cursor-pointer backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/30 to-amber-600/10 rounded-2xl border border-yellow-500/25 shadow-[0_8px_32px_0_rgba(234,179,8,0.25)] hover:shadow-[0_8px_40px_0_rgba(234,179,8,0.35)] transition-all duration-500 relative overflow-hidden"
+                  className="group cursor-pointer backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/30 to-amber-600/10 rounded-3xl border-2 border-yellow-500/25 shadow-[0_8px_32px_0_rgba(234,179,8,0.25)] hover:shadow-[0_8px_40px_0_rgba(234,179,8,0.35)] hover:border-yellow-500/40 transition-all duration-500 relative overflow-hidden w-full min-h-[140px]"
                 >
                   {/* Border inner */}
-                  <div className="absolute inset-0 rounded-2xl border border-white/5 pointer-events-none"></div>
+                  <div className="absolute inset-0 rounded-3xl border border-white/5 pointer-events-none"></div>
 
-                  <div className="p-7 flex flex-col gap-3 relative z-10">
-                    {/* Creator info */}
-                    <div className="flex items-center gap-4 mb-3">
+                  <div className="p-8 flex flex-row items-center gap-8 relative z-10 w-full">
+                    {/* Creator info - Left side */}
+                    <div className="flex items-center gap-5 flex-shrink-0">
                       <div className="relative flex-shrink-0">
                         {poll.creator_image ? (
                           <img
                             src={poll.creator_image}
                             alt={poll.creator_username}
-                            className="w-12 h-12 rounded-full border-2 border-yellow-500/60 shadow-[0_0_10px_rgba(234,179,8,0.22)] object-cover"
+                            className="w-20 h-20 rounded-full border-[3px] border-yellow-500/60 shadow-[0_0_15px_rgba(234,179,8,0.3)] object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 border-2 border-yellow-500/60 flex items-center justify-center shadow-[0_0_7px_rgba(234,179,8,0.33)]">
-                            <User size={28} className="text-black" />
+                          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-yellow-600 border-[3px] border-yellow-500/60 flex items-center justify-center shadow-[0_0_10px_rgba(234,179,8,0.4)]">
+                            <User size={40} className="text-black" />
                           </div>
                         )}
                       </div>
-                      <div>
-                        <div className="text-yellow-100 font-bold text-base">
+                      <div className="flex flex-col gap-1">
+                        <div className="text-yellow-100 font-bold text-lg">
                           {poll.creator_username}
                         </div>
-                        <div className="text-yellow-50/60 text-xs">
+                        <div className="text-yellow-50/60 text-sm">
                           Créateur du poll
                         </div>
                       </div>
                     </div>
 
-                    <div className="mb-3">
-                      <h3 className="text-lg font-semibold text-yellow-50 mb-2 line-clamp-2 group-hover:text-yellow-100 transition-colors">
+                    {/* Poll content - Middle section */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-xl font-semibold text-yellow-50 mb-3 group-hover:text-yellow-100 transition-colors line-clamp-2">
                         {poll.question}
                       </h3>
-                      <p className="text-xs text-yellow-100/80">
-                        Créé le{" "}
+                      <p className="text-sm text-yellow-100/80">
+                        <span className="text-yellow-400/70 font-medium">Créé le:</span>{" "}
                         {poll.created_at
-                          ? new Date(poll.created_at).toLocaleString()
+                          ? new Date(poll.created_at).toLocaleString("fr-FR", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
                           : "-"}
-                        {" "}• Terminé le{" "}
+                        {" • "}
+                        <span className="text-yellow-400/70 font-medium">Terminé le:</span>{" "}
                         {poll.end_time
-                          ? new Date(poll.end_time).toLocaleString()
+                          ? new Date(poll.end_time).toLocaleString("fr-FR", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
                           : "-"}
                       </p>
                     </div>
 
-                    <div className="mt-2 flex justify-end">
-                      <span className="inline-block px-5 py-2 rounded-full border border-yellow-400/40 bg-gradient-to-r from-yellow-600/25 to-yellow-400/25 text-yellow-100 text-xs font-bold tracking-wider group-hover:shadow-md group-hover:text-yellow-300 transition-all duration-300">
-                        Voir les résultats
+                    {/* Action button - Right side */}
+                    <div className="flex-shrink-0">
+                      <span className="inline-block px-8 py-4 rounded-full border-2 border-yellow-400/40 bg-gradient-to-r from-yellow-600/25 to-yellow-400/25 text-yellow-100 text-base font-bold tracking-wider group-hover:shadow-lg group-hover:text-yellow-300 group-hover:border-yellow-400/60 group-hover:from-yellow-600/35 group-hover:to-yellow-400/35 transition-all duration-300 whitespace-nowrap">
+                        Voir les résultats →
                       </span>
                     </div>
                   </div>
@@ -114,7 +129,11 @@ export const VotedPolls = () => {
             {/* No polls state */}
             {votedPolls.length === 0 && (
               <div className="backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/40 to-amber-600/10 rounded-3xl p-16 border border-yellow-500/30 text-center shadow-[0_8px_32px_0_rgba(234,179,8,0.18)]">
-                <div className="text-yellow-400 text-4xl mb-4">📊</div>
+                <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(234,179,8,0.3)]">
+                  <BarChart3 size={56} className="text-yellow-400" />
+                </div>
+                </div>
                 <h3 className="text-yellow-50 text-xl font-bold mb-2">
                   Aucun sondage terminé
                 </h3>

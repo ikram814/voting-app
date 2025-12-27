@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { CheckCircle, Clock, Users, User, Sparkles } from 'lucide-react';
+import { CheckCircle, Clock, Users, User, Sparkles ,BarChart3} from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import { AuthContext } from '../../context/AuthContext';
@@ -157,7 +157,11 @@ export function ViewPolls() {
           {/* No Polls */}
           {!loading && polls.length === 0 && (
             <div className="backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/40 to-amber-600/10 rounded-3xl p-16 border border-yellow-500/30 text-center shadow-[0_8px_32px_0_rgba(234,179,8,0.2)]">
-              <div className="text-yellow-400 text-6xl mb-4">📊</div>
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(234,179,8,0.3)]">
+                  <BarChart3 size={56} className="text-yellow-400" />
+                </div>
+              </div>
               <h3 className="text-yellow-50 text-2xl font-bold mb-2">No Active Polls</h3>
               <p className="text-yellow-100/60">There are no active polls at the moment. Check back later!</p>
             </div>
@@ -168,6 +172,8 @@ export function ViewPolls() {
             {polls.map((poll) => {
               const totalVotes = getTotalVotes(poll);
               const voted = hasVoted(poll);
+              const isCreator = user && poll.created_by === user.id;
+              const canVote = !voted && !isCreator;
               const options = [
                 { text: poll.option1, votes: poll.votes_option1 || 0, index: 1 },
                 { text: poll.option2, votes: poll.votes_option2 || 0, index: 2 },
@@ -216,12 +222,19 @@ export function ViewPolls() {
                       <h3 className="text-2xl font-bold text-yellow-50 flex-1">
                         {poll.question}
                       </h3>
-                      {voted && (
-                        <div className="flex items-center gap-2 px-3 py-1 backdrop-blur-xl bg-green-500/20 border border-green-400/30 rounded-full">
-                          <CheckCircle size={16} className="text-green-400" />
-                          <span className="text-green-400 text-sm font-semibold">Voted</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {isCreator && (
+                          <div className="flex items-center gap-2 px-3 py-1 backdrop-blur-xl bg-blue-500/20 border border-blue-400/30 rounded-full">
+                            <span className="text-blue-400 text-sm font-semibold">Your Poll</span>
+                          </div>
+                        )}
+                        {voted && (
+                          <div className="flex items-center gap-2 px-3 py-1 backdrop-blur-xl bg-green-500/20 border border-green-400/30 rounded-full">
+                            <CheckCircle size={16} className="text-green-400" />
+                            <span className="text-green-400 text-sm font-semibold">Voted</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-4 text-yellow-100/60 text-sm">
@@ -245,11 +258,11 @@ export function ViewPolls() {
                       return (
                         <button
                           key={option.index}
-                          onClick={() => !voted && vote(poll.id, option.index)}
-                          disabled={voted}
+                          onClick={() => canVote && vote(poll.id, option.index)}
+                          disabled={!canVote}
                           className={`w-full relative backdrop-blur-xl rounded-xl p-4 border transition-all duration-300 ${
-                            voted
-                              ? 'cursor-default'
+                            !canVote
+                              ? 'cursor-not-allowed opacity-60'
                               : 'hover:scale-[1.02] cursor-pointer'
                           } ${
                             isSelected
@@ -290,11 +303,18 @@ export function ViewPolls() {
                     })}
                   </div>
 
-                  {!voted && (
+                  {!voted && !isCreator && (
                     <div className="mt-4 text-center relative z-10">
                       <p className="text-yellow-100/40 text-sm flex items-center justify-center gap-2">
                         <Sparkles size={14} />
                         Click an option to cast your vote
+                      </p>
+                    </div>
+                  )}
+                  {isCreator && (
+                    <div className="mt-4 text-center relative z-10">
+                      <p className="text-yellow-400/60 text-sm flex items-center justify-center gap-2">
+                        You cannot vote on your own poll
                       </p>
                     </div>
                   )}

@@ -36,6 +36,8 @@ export default function ProfilePage() {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [pollsCreatedCount, setPollsCreatedCount] = useState(0);
+  const [pollsVotedCount, setPollsVotedCount] = useState(0);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   // Synchroniser avec le user du context
   useEffect(() => {
@@ -46,20 +48,25 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  // Récupérer le nombre de polls créés par l'utilisateur
+  // Récupérer les statistiques de l'utilisateur (polls créés et polls votés)
   useEffect(() => {
-    const fetchPollsCreated = async () => {
+    const fetchUserStats = async () => {
       try {
-        const res = await api.get("/polls/my-polls");
-        setPollsCreatedCount(res.data.length || 0);
+        setLoadingStats(true);
+        const res = await api.get("/polls/user/stats");
+        setPollsCreatedCount(res.data.pollsCreated || 0);
+        setPollsVotedCount(res.data.pollsVoted || 0);
       } catch (err) {
-        console.error('Error fetching polls created:', err);
+        console.error('Error fetching user stats:', err);
         setPollsCreatedCount(0);
+        setPollsVotedCount(0);
+      } finally {
+        setLoadingStats(false);
       }
     };
 
     if (user) {
-      fetchPollsCreated();
+      fetchUserStats();
     }
   }, [user]);
 
@@ -615,7 +622,11 @@ export default function ProfilePage() {
                     <BarChart2 size={32} className="text-black" />
                   </div>
                   <p className="text-yellow-100/70 text-sm mb-2 font-medium">Polls Created</p>
-                  <p className="text-5xl font-bold text-yellow-400 mb-1">{pollsCreatedCount}</p>
+                  {loadingStats ? (
+                    <div className="animate-pulse text-yellow-400 text-5xl font-bold mb-1">...</div>
+                  ) : (
+                    <p className="text-5xl font-bold text-yellow-400 mb-1">{pollsCreatedCount}</p>
+                  )}
                   <p className="text-yellow-100/50 text-xs">Total created</p>
                 </div>
               </div>
@@ -627,7 +638,11 @@ export default function ProfilePage() {
                     <CheckCircle size={32} className="text-black" />
                   </div>
                   <p className="text-yellow-100/70 text-sm mb-2 font-medium">Polls Voted</p>
-                  <p className="text-5xl font-bold text-yellow-400 mb-1">{user.pollsVoted || 0}</p>
+                  {loadingStats ? (
+                    <div className="animate-pulse text-yellow-400 text-5xl font-bold mb-1">...</div>
+                  ) : (
+                    <p className="text-5xl font-bold text-yellow-400 mb-1">{pollsVotedCount}</p>
+                  )}
                   <p className="text-yellow-100/50 text-xs">Total voted</p>
                 </div>
               </div>

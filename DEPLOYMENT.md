@@ -170,3 +170,4 @@ Votre projet est maintenant sur GitHub et vous pouvez :
 - Utiliser GitHub Actions pour CI/CD
 - Déployer sur des plateformes comme Vercel, Heroku, etc.
 
+

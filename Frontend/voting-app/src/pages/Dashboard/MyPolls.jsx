@@ -193,7 +193,11 @@ export function PollList() {
           {/* No Polls */}
           {!loading && polls.length === 0 && (
             <div className="backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/40 to-amber-600/10 rounded-3xl p-16 border border-yellow-500/30 text-center shadow-[0_8px_32px_0_rgba(234,179,8,0.2)]">
-              <div className="text-yellow-400 text-6xl mb-4">📊</div>
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(234,179,8,0.3)]">
+                  <BarChart3 size={56} className="text-yellow-400" />
+                </div>
+              </div>
               <h3 className="text-yellow-50 text-2xl font-bold mb-2">No Polls Yet</h3>
               <p className="text-yellow-100/60">You haven't created any polls yet. Create your first poll to get started!</p>
             </div>
@@ -204,6 +208,8 @@ export function PollList() {
             {polls.map((poll) => {
               const totalVotes = getTotalVotes(poll);
               const voted = hasVoted(poll.id);
+              const isCreator = user && poll.created_by === user.id;
+              const canVote = !voted && !isCreator; // In MyPolls, all polls are created by user, so canVote will always be false
               const options = [
                 { text: poll.option1, votes: poll.votes_option1 || 0, index: 1 },
                 { text: poll.option2, votes: poll.votes_option2 || 0, index: 2 },
@@ -298,11 +304,11 @@ export function PollList() {
                       return (
                         <button
                           key={option.index}
-                          onClick={() => !voted && vote(poll.id, option.index)}
-                          disabled={voted}
+                          onClick={() => canVote && vote(poll.id, option.index)}
+                          disabled={!canVote}
                           className={`w-full relative backdrop-blur-xl rounded-xl p-4 border transition-all duration-300 ${
-                            voted
-                              ? 'cursor-default'
+                            !canVote
+                              ? 'cursor-not-allowed opacity-60'
                               : 'hover:scale-[1.02] cursor-pointer'
                           } ${
                             isSelected

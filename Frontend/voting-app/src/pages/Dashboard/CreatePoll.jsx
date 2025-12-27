@@ -158,7 +158,9 @@ export function CreatePoll() {
 
   if (!user?.isAdmin) {
     return (
+      
       <div className="min-h-screen bg-black flex items-center justify-center">
+        <Sidebar />
         <div className="backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/40 to-amber-600/10 rounded-3xl p-10 border border-yellow-500/30 text-center shadow-[0_8px_32px_0_rgba(234,179,8,0.2),inset_0_1px_0_0_rgba(255,255,255,0.1)] hover:shadow-[0_8px_40px_0_rgba(234,179,8,0.3)] transition-all duration-500">
           <div className="text-yellow-400 text-6xl mb-4">🔒</div>
           <h3 className="text-yellow-50 text-2xl font-bold mb-2">Access Denied</h3>

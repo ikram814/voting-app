@@ -39,7 +39,7 @@ export default function Sidebar() {
     ">
       
       {/* Title */}
-      <h1 className="text-2xl font-bold">Voting</h1>
+      <h1 className="text-2xl font-bold pl-12"> Vote App</h1>
 
       {/* Profile dynamique avec image */}
       <div className="flex flex-col items-center text-center mb-7 -mt-2">
@@ -99,7 +99,7 @@ export default function Sidebar() {
         />
         <SidebarItem 
           icon={<CheckCircle size={22} />} 
-          text="Voted polls" 
+          text="Notifications" 
           onClick={() => navigate("/votedPolls")} 
           isActive={location.pathname === "/votedPolls"} 
         />

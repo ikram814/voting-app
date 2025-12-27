@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Heart, User, Clock, ArrowLeft, ArrowRight, Sparkles } from 'lucide-react';
+import { Heart, User, Clock, ArrowLeft, ArrowRight, Sparkles, BarChart3 } from 'lucide-react';
 import Sidebar from '../../components/Sidebar';
 import api from '../../api';
 import  Image   from '../../assets/images/imgbanner.png';
@@ -315,7 +315,11 @@ export const Home = () => {
           {/* No Polls */}
           {!loading && polls.length === 0 && (
             <div className="backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-black/40 to-amber-600/10 rounded-3xl p-16 border border-yellow-500/30 text-center shadow-[0_8px_32px_0_rgba(234,179,8,0.2)]">
-              <div className="text-yellow-400 text-6xl mb-4">📊</div>
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-500/20 to-amber-600/20 border-2 border-yellow-500/40 flex items-center justify-center shadow-[0_0_25px_rgba(234,179,8,0.3)]">
+                  <BarChart3 size={56} className="text-yellow-400" />
+                </div>
+              </div>
               <h3 className="text-yellow-50 text-2xl font-bold mb-2">No Active Polls</h3>
               <p className="text-yellow-100/60">There are no active polls at the moment. Check back later!</p>
             </div>
