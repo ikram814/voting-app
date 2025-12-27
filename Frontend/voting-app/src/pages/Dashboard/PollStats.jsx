@@ -23,7 +23,7 @@ export const PollStats = () => {
         setPoll(res.data);
       } catch (err) {
         const msg =
-          err.response?.data?.message || "Erreur lors du chargement du poll.";
+          err.response?.data?.message || "Error loading poll.";
         setError(msg);
       } finally {
         setLoading(false);
@@ -70,12 +70,12 @@ export const PollStats = () => {
             className="flex items-center gap-2 text-yellow-400 hover:text-yellow-200 transition-colors"
           >
             <ArrowLeft size={20} />
-            <span className="text-sm font-medium">Retour</span>
+            <span className="text-sm font-medium">Back</span>
           </button>
 
           <div className="flex items-center gap-3 text-yellow-200/80 text-sm">
             <BarChart2 size={18} />
-            <span>Statistiques du sondage</span>
+            <span>Poll Statistics</span>
           </div>
         </div>
 
@@ -89,12 +89,12 @@ export const PollStats = () => {
           <div className="backdrop-blur-xl bg-gradient-to-br from-red-500/10 via-black/40 to-red-600/10 rounded-3xl p-10 border border-red-500/40 text-center shadow-[0_8px_32px_0_rgba(239,68,68,0.25)]">
             <p className="text-red-400 text-lg font-semibold mb-2">{error}</p>
             <p className="text-red-200/70 text-sm">
-              Assurez-vous que le sondage est terminé et que vous y avez accès.
+              Make sure the poll is completed and you have access to it.
             </p>
           </div>
         ) : !poll ? (
           <div className="text-yellow-100/70 text-center py-20">
-            Aucune donnée pour ce sondage.
+            No data available for this poll.
           </div>
         ) : (
           <div className="space-y-8">
@@ -126,26 +126,26 @@ export const PollStats = () => {
                         {poll.creator_username || "Unknown"}
                       </p>
                       <p className="text-yellow-100/60 text-xs">
-                        {poll.creator_email || "Aucun email"}
+                        {poll.creator_email || "No email"}
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right">
                     <p className="text-xs text-yellow-200/70">
-                      Créé le{" "}
+                      Created at{" "}
                       {poll.created_at
                         ? new Date(poll.created_at).toLocaleString()
                         : "-"}
                     </p>
                     <p className="text-xs text-yellow-200/70">
-                      Terminé le{" "}
+                      Ended at{" "}
                       {poll.end_time
                         ? new Date(poll.end_time).toLocaleString()
                         : "-"}
                     </p>
                     <p className="text-xs text-yellow-300 mt-1">
-                      Total votes :{" "}
+                      Total votes:{" "}
                       <span className="font-semibold">{totalVotes}</span>
                     </p>
                   </div>
@@ -157,7 +157,7 @@ export const PollStats = () => {
                     {poll.question}
                   </h1>
                   <p className="text-yellow-100/60 text-sm">
-                    Visualisation détaillée des résultats de votre sondage.
+                    Detailed visualization of your poll results.
                   </p>
                 </div>
               </div>
@@ -171,10 +171,10 @@ export const PollStats = () => {
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-yellow-50 flex items-center gap-2">
                     <BarChart2 size={20} className="text-yellow-400" />
-                    Résultats du sondage
+                    Poll Results
                   </h2>
                   <p className="text-xs text-yellow-100/60">
-                    Vue globale + détail par option.
+                    Overall view + detail by option.
                   </p>
                 </div>
 
@@ -200,7 +200,7 @@ export const PollStats = () => {
                               {totalVotes}
                             </div>
                             <div className="text-xs text-yellow-100/60 mt-1">
-                              total participations
+                              total participants
                             </div>
                           </div>
                         </div>
@@ -211,7 +211,7 @@ export const PollStats = () => {
                   {/* Vertical bars chart style */}
                   <div className="space-y-6">
                     <div className="text-sm text-yellow-100/70">
-                      Distribution des votes par option.
+                      Vote distribution by option.
                     </div>
 
                     <div className="relative h-64 flex items-end gap-4">
@@ -265,7 +265,7 @@ export const PollStats = () => {
 
                             {isUserChoice && (
                               <div className="text-[10px] text-green-400 mt-1">
-                                Votre choix
+                                Your choice
                               </div>
                             )}
                           </div>
@@ -274,7 +274,7 @@ export const PollStats = () => {
 
                       {options.length === 0 && (
                         <div className="w-full text-center text-yellow-100/70 text-sm">
-                          Aucune option valide trouvée pour ce sondage.
+                          No valid options found for this poll.
                         </div>
                       )}
                     </div>

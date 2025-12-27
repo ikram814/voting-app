@@ -18,7 +18,7 @@ export const VotedPolls = () => {
         const res = await api.get("/polls/finished");
         setVotedPolls(res.data);
       } catch (err) {
-        setError("Erreur lors du chargement des sondages terminés.");
+        setError("Error loading completed polls.");
       } finally {
         setLoading(false);
       }
@@ -75,7 +75,7 @@ export const VotedPolls = () => {
                           {poll.creator_username}
                         </div>
                         <div className="text-yellow-50/60 text-sm">
-                          Créateur du poll
+                          Poll Creator
                         </div>
                       </div>
                     </div>
@@ -86,9 +86,9 @@ export const VotedPolls = () => {
                         {poll.question}
                       </h3>
                       <p className="text-sm text-yellow-100/80">
-                        <span className="text-yellow-400/70 font-medium">Créé le:</span>{" "}
+                        <span className="text-yellow-400/70 font-medium">Created at:</span>{" "}
                         {poll.created_at
-                          ? new Date(poll.created_at).toLocaleString("fr-FR", {
+                          ? new Date(poll.created_at).toLocaleString("en-US", {
                               day: "2-digit",
                               month: "2-digit",
                               year: "numeric",
@@ -97,9 +97,9 @@ export const VotedPolls = () => {
                             })
                           : "-"}
                         {" • "}
-                        <span className="text-yellow-400/70 font-medium">Terminé le:</span>{" "}
+                        <span className="text-yellow-400/70 font-medium">Ended at:</span>{" "}
                         {poll.end_time
-                          ? new Date(poll.end_time).toLocaleString("fr-FR", {
+                          ? new Date(poll.end_time).toLocaleString("en-US", {
                               day: "2-digit",
                               month: "2-digit",
                               year: "numeric",
@@ -113,7 +113,7 @@ export const VotedPolls = () => {
                     {/* Action button - Right side */}
                     <div className="flex-shrink-0">
                       <span className="inline-block px-8 py-4 rounded-full border-2 border-yellow-400/40 bg-gradient-to-r from-yellow-600/25 to-yellow-400/25 text-yellow-100 text-base font-bold tracking-wider group-hover:shadow-lg group-hover:text-yellow-300 group-hover:border-yellow-400/60 group-hover:from-yellow-600/35 group-hover:to-yellow-400/35 transition-all duration-300 whitespace-nowrap">
-                        Voir les résultats →
+                        View Results →
                       </span>
                     </div>
                   </div>
@@ -135,10 +135,10 @@ export const VotedPolls = () => {
                 </div>
                 </div>
                 <h3 className="text-yellow-50 text-xl font-bold mb-2">
-                  Aucun sondage terminé
+                  No Completed Polls
                 </h3>
                 <p className="text-yellow-100/60">
-                  Vous n'avez pas encore participé à de sondages terminés.
+                  You haven't participated in any completed polls yet.
                 </p>
               </div>
             )}

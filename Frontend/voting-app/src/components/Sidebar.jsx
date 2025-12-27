@@ -67,7 +67,7 @@ export default function Sidebar() {
             <User size={50} className="text-black/80" />
           )}
         </div>
-        <h2 className="text-lg font-semibold">{user?.username || "Utilisateur"}</h2>
+        <h2 className="text-lg font-semibold">{user?.username || "User"}</h2>
         <p className="text-gray-400 text-sm">{user?.email || "user@example.com"}</p>
       </div>
 
